@@ -76,6 +76,11 @@ namespace Radzen
         public Blazor.RadzenGridColumn<T> Column { get; internal set; }
     }
 
+    public class DataGridCellRenderEventArgs<T> : RowRenderEventArgs<T>
+    {
+        public Blazor.RadzenDataGridColumn<T> Column { get; internal set; }
+    }
+
     public class UploadChangeEventArgs
     {
         public IEnumerable<FileInfo> Files { get; set; }
@@ -250,11 +255,30 @@ namespace Radzen
         EndsWith
     }
 
+    public enum FilterOperator
+    {
+        Equals,
+        NotEquals,
+        LessThan,
+        LessThanOrEquals,
+        GreaterThan,
+        GreaterThanOrEquals,
+        Contains,
+        StartsWith,
+        EndsWith
+    }
+
     public enum TextAlign
     {
         Left,
         Right,
         Center
+    }
+
+    public class DataGridColumnResizedEventArgs<T>
+    {
+        public RadzenDataGridColumn<T> Column { get; internal set; }
+        public double Width { get; internal set; }
     }
 
     public class ColumnResizedEventArgs<T>
