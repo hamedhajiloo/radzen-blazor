@@ -71,6 +71,12 @@ namespace Radzen
         public bool FirstRender { get; internal set; }
     }
 
+    public class DataGridRenderEventArgs<T>
+    {
+        public RadzenDataGrid<T> Grid { get; internal set; }
+        public bool FirstRender { get; internal set; }
+    }
+
     public class CellRenderEventArgs<T> : RowRenderEventArgs<T>
     {
         public Blazor.RadzenGridColumn<T> Column { get; internal set; }

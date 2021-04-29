@@ -10,19 +10,45 @@
         {
             Grid.AddColumn(this);
 
-            if (!string.IsNullOrEmpty(Property))
-            {
-                propertyValueGetter = PropertyAccess.Getter<TItem, object>(Property);
-            }
-
             var property = GetFilterProperty();
 
             if (!string.IsNullOrEmpty(property))
             {
                 _filterPropertyType = PropertyAccess.GetPropertyType(typeof(TItem), property);
+
+                if (_filterPropertyType == null)
+                {
+                    if (Type == "number")
+                    {
+                        _filterPropertyType = typeof(double?);
+                    }
+                    else if (Type == "integer")
+                    {
+                        _filterPropertyType = typeof(int?);
+                    }
+                    else if (Type == "boolean")
+                    {
+                        _filterPropertyType = typeof(bool?);
+                    }
+                    else if (Type == "string" && (Format == "date" || Format == "date-time"))
+                    {
+                        _filterPropertyType = typeof(DateTime?);
+                    }
+                    else if (Type == "string" && Format == "uuid")
+                    {
+                        _filterPropertyType = typeof(Guid?);
+                    }
+                    else
+                    {
+                        _filterPropertyType = typeof(string);
+                    }
+                }
             }
         }
     }
+
+    [Parameter]
+    public string Type { get; set; } = "string";
 
     [Parameter]
     public bool Visible { get; set; } = true;
@@ -93,11 +119,9 @@
     [Parameter]
     public LogicalFilterOperator LogicalFilterOperator { get; set; } = LogicalFilterOperator.And;
 
-    Func<TItem, object> propertyValueGetter;
-
     public object GetValue(TItem item)
     {
-        return propertyValueGetter != null ? propertyValueGetter(item) : "";
+        return !string.IsNullOrEmpty(Property) ? PropertyAccess.GetValue(item, Property) : "";
     }
 
     internal object GetHeader()
