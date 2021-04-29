@@ -418,7 +418,15 @@ namespace Radzen
         public static Func<TItem, TValue> Getter<TItem, TValue>(string propertyName)
         {
             var arg = Expression.Parameter(typeof(TItem));
-            var body = Expression.Convert(Expression.Property(arg, propertyName), typeof(TValue));
+
+            Expression body = arg;
+
+            foreach (var member in propertyName.Split("."))
+            {
+                body = Expression.PropertyOrField(body, member);
+            }
+
+            body = Expression.Convert(body, typeof(TValue));
 
             return Expression.Lambda<Func<TItem, TValue>>(body, arg).Compile();
         }
