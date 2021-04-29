@@ -840,9 +840,6 @@
     [Parameter]
     public Action<DataGridRenderEventArgs<TItem>> Render { get; set; }
 
-    [Parameter]
-    public bool Responsive { get; set; } = true;
-
     protected override void OnDataChanged()
     {
         Reset(!IsOData() && !LoadData.HasDelegate);
@@ -1231,11 +1228,6 @@
         if (RowSelect.HasDelegate || ValueChanged != null || SelectionMode == DataGridSelectionMode.Multiple)
         {
             additionalClasses.Add("rz-selectable");
-        }
-
-        if (Responsive)
-        {
-            additionalClasses.Add("rz-datatable-reflow");
         }
 
         return $"rz-has-paginator rz-datatable  rz-datatable-scrollable {String.Join(" ", additionalClasses)}";
