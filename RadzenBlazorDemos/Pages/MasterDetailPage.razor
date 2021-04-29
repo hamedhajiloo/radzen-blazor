@@ -19,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-6">
-            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="3" AllowSorting="true" Data="@orders" TItem="Order" @bind-Value="@order">
+            <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="3" AllowSorting="true" Data="@orders" TItem="Order" @bind-Value="@SelectedOrders">
                 <Columns>
                     <RadzenDataGridColumn Width="100px" TItem="Order" Property="OrderID" Title="Order ID" />
                     <RadzenDataGridColumn Width="200px" TItem="Order" Property="Customer.CompanyName" Title="Customer" />
@@ -61,12 +61,12 @@ else
         <div class="col-md-6">
             <RadzenCard Style="margin-bottom:20px">
                 Company:
-                <b>@order.Customer?.CompanyName</b>
+                <b>@SelectedOrders.FirstOrDefault()?.Customer?.CompanyName</b>
             </RadzenCard>
             <RadzenTabs>
                 <Tabs>
                     <RadzenTabsItem Text="Order Details">
-                        <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@order.OrderDetails" TItem="OrderDetail">
+                        <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@(SelectedOrders.FirstOrDefault()?.OrderDetails)" TItem="OrderDetail">
                             <Columns>
                                 <RadzenDataGridColumn TItem="OrderDetail" Property="Order.CustomerID" Title="Order" />
                                 <RadzenDataGridColumn TItem="OrderDetail" Property="Product.ProductName" Title="Product" />
@@ -85,7 +85,7 @@ else
                         </RadzenDataGrid>
                     </RadzenTabsItem>
                     <RadzenTabsItem Text="Products">
-                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@order.OrderDetails" TItem="OrderDetail" PageSize="10">
+                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@(SelectedOrders.FirstOrDefault()?.OrderDetails)" TItem="OrderDetail" PageSize="10">
                             <Template Context="detail">
                                 <RadzenCard Style="width:100px;height:100px">
                                     Product:
@@ -102,18 +102,18 @@ else
 </RadzenExample>
 
 @code {
-    dynamic _order;
-    dynamic order
+    IList<Order> _selectedOrders;
+    IList<Order> SelectedOrders
     {
         get
         {
-            return _order;
+            return _selectedOrders;
         }
         set
         {
-            if (_order != value)
+            if (_selectedOrders != value)
             {
-                _order = value;
+                _selectedOrders = value;
                 StateHasChanged();
             }
         }
@@ -129,6 +129,6 @@ else
             .Include("OrderDetails")
             .Include("OrderDetails.Product");
 
-        order = orders.FirstOrDefault();
+        SelectedOrders = new List<Order>(){ orders.FirstOrDefault() };
     }
 }

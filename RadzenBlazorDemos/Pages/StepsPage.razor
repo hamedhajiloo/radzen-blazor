@@ -13,7 +13,7 @@
             <Steps>
                 <RadzenStepsItem Text="Customers">
                     <h3>Select Customer</h3>
-                    <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer" Value="@customer" RowSelect="@(args => customer = args)">
+                    <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer" @bind-Value="@selectedCustomers">
                         <Columns>
                             <RadzenDataGridColumn TItem="Customer" Property="CustomerID" Title="Customer ID" />
                             <RadzenDataGridColumn TItem="Customer" Property="CompanyName" Title="Company Name" />
@@ -29,10 +29,10 @@
                         </Columns>
                     </RadzenDataGrid>
                 </RadzenStepsItem>
-                <RadzenStepsItem Text="Orders" Disabled="@(customer == null)">
+                <RadzenStepsItem Text="Orders" Disabled="@(selectedCustomers == null || selectedCustomers != null && !selectedCustomers.Any())">
                     <h3>Select Order</h3>
                     <RadzenDataGrid ColumnWidth="200px" PageSize="2" AllowFiltering="true" AllowPaging="true" AllowSorting="true" 
-                                Data="@orders" TItem="Order" Value="@order" RowSelect="@(args => order = args)">
+                                Data="@(selectedCustomers != null && selectedCustomers.Any() ? orders.Where(o => o.CustomerID == selectedCustomers[0].CustomerID) : Enumerable.Empty<Order>())" TItem="Order" @bind-Value="@selectedOrders">
                         <Columns>
                             <RadzenDataGridColumn Width="100px" TItem="Order" Property="OrderID" Title="Order ID" />
                             <RadzenDataGridColumn Width="200px" TItem="Order" Property="Customer.CompanyName" Title="Customer" />
@@ -71,9 +71,9 @@
                         </Columns>
                     </RadzenDataGrid>
                 </RadzenStepsItem>
-                <RadzenStepsItem Text="Order Details" Disabled="@(order == null)">
+                <RadzenStepsItem Text="Order Details" Disabled="@(selectedOrders == null || selectedOrders != null && !selectedOrders.Any())">
                     <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true"
-                                Data="@(orderDetails.Where(o => o.OrderID == order.OrderID))" TItem="OrderDetail" ColumnWidth="200px">
+                                Data="@(selectedOrders != null && selectedOrders.Any() ? orderDetails.Where(o => o.OrderID == selectedOrders[0].OrderID) : Enumerable.Empty<OrderDetail>())" TItem="OrderDetail" ColumnWidth="200px">
                         <Columns>
                             <RadzenDataGridColumn TItem="OrderDetail" Property="Product.ProductName" Title="Product" />
                             <RadzenDataGridColumn TItem="OrderDetail" Property="Quantity" Title="Quantity" />
@@ -96,8 +96,8 @@
     IEnumerable<Order> orders;
     IEnumerable<OrderDetail> orderDetails;
 
-    Customer customer;
-    Order order;
+    IList<Customer> selectedCustomers;
+    IList<Order> selectedOrders;
 
     protected override void OnInitialized()
     {

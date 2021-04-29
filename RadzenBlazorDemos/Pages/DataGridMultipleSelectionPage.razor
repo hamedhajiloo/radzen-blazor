@@ -9,15 +9,15 @@
 <RadzenExample Name="DataGridMultipleSelection">
     <RadzenDataGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="4"
                 AllowSorting="true" Data="@employees" TItem="Employee" ColumnWidth="200px"
-                SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
+                SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEmployees>
         <Columns>
             <RadzenDataGridColumn TItem="Employee" Width="40px" Sortable="false" Filterable="false">
                 <HeaderTemplate>
-                    <RadzenCheckBox TriState="false" TValue="bool" Value="@(employees.Any(i => multipleValues != null && (multipleValues as IEnumerable<Employee>).Contains(i)))"
-                                    Change="@(args => multipleValues = args ? employees : null)" />
+                    <RadzenCheckBox TriState="false" TValue="bool" Value="@(employees.Any(i => selectedEmployees != null && selectedEmployees.Contains(i)))"
+                                    Change="@(args => selectedEmployees = args ? employees.ToList() : null)" />
                 </HeaderTemplate>
                 <Template Context="data">
-                    <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Employee>).Contains(data))" />
+                    <RadzenCheckBox TriState="false" Value="@(selectedEmployees != null && selectedEmployees.Contains(data))" />
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Employee" Property="EmployeeID" Title="Employee ID" />
@@ -53,7 +53,7 @@
 </RadzenExample>
 @code {
     IEnumerable<Employee> employees;
-    object multipleValues;
+    IList<Employee> selectedEmployees;
 
     protected override void OnInitialized()
     {

@@ -43,6 +43,10 @@
                         _filterPropertyType = typeof(string);
                     }
                 }
+                else
+                {
+                    propertyValueGetter = PropertyAccess.Getter<TItem, object>(Property);
+                }
             }
         }
     }
@@ -119,9 +123,11 @@
     [Parameter]
     public LogicalFilterOperator LogicalFilterOperator { get; set; } = LogicalFilterOperator.And;
 
+    Func<TItem, object> propertyValueGetter;
+
     public object GetValue(TItem item)
     {
-        return !string.IsNullOrEmpty(Property) ? PropertyAccess.GetValue(item, Property) : "";
+        return propertyValueGetter != null ? propertyValueGetter(item) : !string.IsNullOrEmpty(Property) ? PropertyAccess.GetValue(item, Property) : "";
     }
 
     internal object GetHeader()

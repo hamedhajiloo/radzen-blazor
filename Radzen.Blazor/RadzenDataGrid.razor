@@ -775,10 +775,10 @@
     }
 
 
-    object _value;
+    IList<TItem> _value;
 
     [Parameter]
-    public object Value
+    public IList<TItem> Value
     {
         get
         {
@@ -794,15 +794,7 @@
 
                 if (_value != null)
                 {
-                    var values = _value as IEnumerable<TItem>;
-                    if (values != null && SelectionMode == DataGridSelectionMode.Multiple)
-                    {
-                        values.ToList().ForEach(i => selectedItems.Add(i, true));
-                    }
-                    else
-                    {
-                        selectedItems.Add((TItem)_value, true);
-                    }
+                    _value.Where(v => v != null).ToList().ForEach(v => selectedItems.Add(v, true));
                 }
 
                 ValueChanged?.Invoke(_value);
@@ -811,7 +803,7 @@
     }
 
     [Parameter]
-    public Action<object> ValueChanged { get; set; }
+    public Action<IList<TItem>> ValueChanged { get; set; }
 
     [Parameter]
     public EventCallback<TItem> RowSelect { get; set; }
@@ -848,7 +840,7 @@
     public void Reset(bool resetColumnFilters = true, bool resetRowState = false)
     {
         _view = null;
-        _value = default(TItem);
+        _value = new List<TItem>();
 
         if (resetRowState)
         {
@@ -1076,7 +1068,7 @@
 
         var value = selectedItems.Keys;
 
-        _value = SelectionMode == DataGridSelectionMode.Multiple ? (object)value : value.FirstOrDefault();
+        _value = SelectionMode == DataGridSelectionMode.Multiple ? new List<TItem>(value) : new List<TItem>() { value.FirstOrDefault() };
         ValueChanged?.Invoke(_value);
         StateHasChanged();
     }
