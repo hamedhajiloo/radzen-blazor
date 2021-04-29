@@ -138,7 +138,13 @@
 
         if (forCell && Frozen)
         {
-            var left = Grid.ColumnsCollection.TakeWhile((c, i) => Grid.ColumnsCollection.IndexOf(this) > i).Sum(c => int.Parse((!string.IsNullOrEmpty(width) ? width : Grid.ColumnWidth).Replace("px", "")));
+            var left = Grid.ColumnsCollection
+                .TakeWhile((c, i) => Grid.ColumnsCollection.IndexOf(this) > i && c.Frozen)
+                .Sum(c => {
+                    var w = !string.IsNullOrEmpty(c.GetWidth()) ? c.GetWidth() : Grid.ColumnWidth;
+                    return !string.IsNullOrEmpty(w) && w.Contains("px") ? int.Parse(w.Replace("px", "")) : 200;
+                });
+
             style.Add($"left:{left}px");
         }
 

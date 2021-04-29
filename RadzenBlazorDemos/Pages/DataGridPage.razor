@@ -8,15 +8,15 @@
 
 <RadzenExample Name="DataGrid">
     <RadzenDataGrid PagerPosition="PagerPosition.TopAndBottom" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="4"
-                AllowSorting="true" Data="@employees" TItem="Employee" ColumnWidth="200px" AllowColumnResize="true" LogicalFilterOperator="LogicalFilterOperator.Or">
+                AllowSorting="true" Data="@employees" TItem="Employee" ColumnWidth="300px"  AllowColumnResize="true" LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
-            <RadzenDataGridColumn TItem="Employee" Property="EmployeeID" Title="Employee ID" Frozen="true" />
-            <RadzenDataGridColumn TItem="Employee" Property="Photo" Title="Photo" Sortable="false" Filterable="false" Frozen="true">
+            <RadzenDataGridColumn TItem="Employee" Property="EmployeeID" Title="Employee ID" Frozen="true" Width="150px" />
+            <RadzenDataGridColumn TItem="Employee" Property="Photo" Title="Photo" Sortable="false" Filterable="false" Width="200px" >
                 <Template Context="data">
                     <RadzenImage Path="@data?.Photo" />
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Employee" Property="LastName" Title="Last Name" />
+            <RadzenDataGridColumn TItem="Employee" Property="LastName" Title="Last Name" Frozen="true" Width="150px"/>
             <RadzenDataGridColumn TItem="Employee" Property="FirstName" Title="First Name" />
             <RadzenDataGridColumn TItem="Employee" Property="Title" Title="Title" />
             <RadzenDataGridColumn TItem="Employee" Property="TitleOfCourtesy" Title="Title Of Courtesy" />
